@@ -2,11 +2,14 @@ import { OrientationEnum, TurnEnum } from "./enums.js";
 
 class Actuator {
 	moveTo(pos) { return pos; }
+	clonePos(pos) {
+		return { row: pos.row, col: pos.col };
+	}
 	getNewPos(currentPos, currentOrientation, turn) {
 		if (turn != TurnEnum.LEFT && turn != TurnEnum.RIGHT) {
 			return currentPos;
 		}
-		let newPos = { row: currentPos.row, col: currentPos.col };
+		let newPos = this.clonePos();
 		switch (currentOrientation) {
 			case OrientationEnum.LEFT: {
 				if (turn == TurnEnum.LEFT) { newPos.row--; }
