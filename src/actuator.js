@@ -1,6 +1,18 @@
 import { OrientationEnum, TurnEnum } from "./enums.js";
 
 class Actuator {
+	constructor() {
+		this.changePositionActions = {};
+		this.changePositionActions[OrientationEnum.LEFT] = (turn, newPos) => {
+			if (turn == TurnEnum.LEFT) { newPos.row--; }
+			else { newPos.row++; }
+		};
+	}
+	goLeftOrRight(turn, newPos, reverse) {
+		let incrementBy = reverse || -1;
+		if (turn == TurnEnum.LEFT) { newPos.col += incrementBy; }
+		else { newPos.col -= incrementBy; }
+	}
 	moveTo(pos) { return pos; }
 	clonePos(pos) {
 		return { row: pos.row, col: pos.col };
