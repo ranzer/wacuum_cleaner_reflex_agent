@@ -4,14 +4,33 @@ class Actuator {
 	constructor() {
 		this.changePositionActions = {};
 		this.changePositionActions[OrientationEnum.LEFT] = (turn, newPos) => {
-			if (turn == TurnEnum.LEFT) { newPos.row--; }
-			else { newPos.row++; }
+			this.goForwardOrBackward(turn, newPos,
+				(newPos) => { newPos.row++; },
+				(newPos) => { newPos.row--; }
+			);
 		};
+		this.changePositionActions[OrientationEnum.RIGHT] = (turn, newPos) => {
+			this.goForwardOrBackward(turn, newPos,
+				(newPos) => { newPos.row--; },
+				(newPos) => { newPos.row++; }
+			);
+		};
+		this.changePositionActions[OrientationEnum.UP] = (turn, newPos) => {
+			this.goForwardOrBackward(turn, newPos,
+				(newPos) => { newPos.col++; },
+				(newPos) => { newPos.col--; }
+			);
+		};
+		this.changePositionActions[OrientationEnum.DOWN] = (turn, newPos) => {
+			this.goForwardOrBackward(turn, newPos,
+				(newPos) => { newPos.col--; },
+				(newPos) => { newPos.col++; }
+			);
+		}
 	}
-	goLeftOrRight(turn, newPos, reverse) {
-		let incrementBy = reverse || -1;
-		if (turn == TurnEnum.LEFT) { newPos.col += incrementBy; }
-		else if (turn == TurnEnum.RIGHT) { newPos.col -= incrementBy; }
+	goForwardOrBackward(turn, newPos, forwardAction, backwardAction) {
+		if (turn == TurnEnum.LEFT) { backwardAction(newPos); }
+		else if (turn == TurnEnum.RIGHT) { forwardAction(newPos); }
 	}
 	moveTo(pos) { return pos; }
 	clonePos(pos) {
