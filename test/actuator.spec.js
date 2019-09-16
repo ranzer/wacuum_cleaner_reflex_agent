@@ -5,62 +5,42 @@ import { OrientationEnum, TurnEnum } from "../src/enums.js";
 
 describe("Actuator", () => {
   let actr;
+
   beforeEach(() => { actr = new Actuator(); });
 
-  describe("goLeftOrRight", () => {
-    let newPos;
-    beforeEach(() => { newPos = { col: 1, row: 1 }});
-    describe("when movement isn't reversed", () => {
-      it("should decrease column property on left turn", () => {
-        let turn = TurnEnum.LEFT;
+  describe("goForwardOrBackward", () => {
+    let newPos, backwardActionSpy, forwardActionSpy;
 
-        actr.goLeftOrRight(turn, newPos);
-
-        expect(newPos.col).to.be.equal(0);
-        expect(newPos.row).to.be.equal(1);
-      });
-      it("should increase column property on right turn", () => {
-        let turn = TurnEnum.RIGHT;
-
-        actr.goLeftOrRight(turn, newPos);
-
-        expect(newPos.col).to.be.equal(2);
-        expect(newPos.row).to.be.equal(1);
-      });
-      it("should do nothing if turn is not either left or right", () => {
-        let turn = 1000;
-
-        actr.goLeftOrRight(turn, newPos);
-
-        expect(newPos.col).to.be.equal(1);
-        expect(newPos.row).to.be.equal(1);
-      });
+    beforeEach(() => {
+      newPos = { col: 1, row: 1 }
+      backwardActionSpy = spy();
+      forwardActionSpy = spy();
     });
-    describe("when movement is reversed", () => {
-      it("should increase column property on left turn", () => {
-        let turn = TurnEnum.LEFT;
+    it("should perform backward action on left turn", () => {
+      let turn = TurnEnum.LEFT;
 
-        actr.goLeftOrRight(turn, newPos, true);
+      actr.goForwardOrBackward(turn, newPos, forwardActionSpy, backwardActionSpy);
 
-        expect(newPos.col).to.be.equal(2);
-        expect(newPos.row).to.be.equal(1);
-      });
-      it("should decrease column property on right turn", () => {
-        let turn = TurnEnum.RIGHT;
+      expect(backwardActionSpy.calledOnce).to.be.true;
+      expect(backwardActionSpy.calledWith(newPos)).to.be.true;
+      expect(forwardActionSpy.notCalled).to.be.true;
+    });
+    it("should perform forward action on right turn", () => {
+      let turn = TurnEnum.RIGHT;
 
-        actr.goLeftOrRight(turn, newPos, true);
+      actr.goForwardOrBackward(turn, newPos, forwardActionSpy, backwardActionSpy);
 
-        expect(newPos.col).to.be.equal(0);
-        expect(newPos.row).to.be.equal(1);
-      });
-      it("should do nothing if turn is not either left or right", () => {
+      expect(backwardActionSpy.notCalled).to.be.true;
+      expect(forwardActionSpy.calledOnce).to.be.true;
+      expect(forwardActionSpy.calledWith(newPos)).to.be.true;
+    });
+    it("should do nothing if turn is not either left or right", () => {
         let turn = 1000;
 
-        actr.goLeftOrRight(turn, newPos, true);
+        actr.goForwardOrBackward(turn, newPos, forwardActionSpy, backwardActionSpy);
 
-        expect(newPos.col).to.be.equal(1);
-        expect(newPos.row).to.be.equal(1);
-      });
+        expect(backwardActionSpy.notCalled).to.be.true;
+        expect(forwardActionSpy.notCalled).to.be.true;
     });
   });
   describe("moveTo", () => {
