@@ -11,7 +11,7 @@ class Actuator {
 	goLeftOrRight(turn, newPos, reverse) {
 		let incrementBy = reverse || -1;
 		if (turn == TurnEnum.LEFT) { newPos.col += incrementBy; }
-		else { newPos.col -= incrementBy; }
+		else if (turn == TurnEnum.RIGHT) { newPos.col -= incrementBy; }
 	}
 	moveTo(pos) { return pos; }
 	clonePos(pos) {
