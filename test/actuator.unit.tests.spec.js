@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { Actuator } from "../src/actuator.js";
 import { OrientationEnum, TurnEnum } from "../src/enums.js";
 
-describe("Actuator", () => {
+describe("Actuator unit tests", () => {
   let actr;
 
   beforeEach(() => { actr = new Actuator(); });
@@ -52,7 +52,24 @@ describe("Actuator", () => {
     });
   });
   describe("getNewPos", () => {
-    let pos = { col: 2, row: 2 };
+    let pos = { col: 2, row: 2 },
+        clonePosSpy,
+        clonePosStub,
+        changePositionActionSpy,
+        getChangePositionActionStub;
+
+    beforeEach(() => {
+      clonePosSpy = spy();
+      changePositionActionSpy = spy();
+      clonePosStub = stub(actr, "clonePos").callsFake(() => {
+        clonePosSpy();
+        return pos;
+      });
+      getChangePositionActionStub = stub(actr, "getChangePositionAction")
+        .callsFake(() => {
+          return changePositionActionSpy;
+        });
+    });
 
     describe("when turn is not either left or right", () => {
       it("should return the current position argumentt", () => {
@@ -65,17 +82,33 @@ describe("Actuator", () => {
       });
     });
     describe("when turn is either left or right", () => {
-      it("should call the clonePos method", () => {
+      it("should call the clonePos method with correct arguments", () => {
         let turn = TurnEnum.LEFT;
-        let fn = spy();
-        let clonePosStub = stub(actr, "clonePos").callsFake(() => {
-          fn();
-          return pos;
-        });
+
         let ret = actr.getNewPos(pos, OrientationEnum.LEFT, turn);
 
-        expect(fn.calledOnce).to.be.true;
+        expect(clonePosStub.calledWith(pos)).to.be.true;
+        expect(clonePosSpy.calledOnce).to.be.true;
       });
+      it("should call getChangePositionAction method", () => {
+        let turn = TurnEnum.LEFT;
+        let orientation = OrientationEnum.LEFT;
+
+        let ret = actr.getNewPos(pos, orientation, turn);
+
+        expect(getChangePositionActionStub.calledOnce).to.be.true;
+        expect(getChangePositionActionStub.calledWith(orientation)).to.be.true;
+      });
+      it ("should execute an action returned by the getChangePositionAction method", () => {
+        let turn = TurnEnum.LEFT;
+        let orientation = OrientationEnum.LEFT;
+
+        let ret = actr.getNewPos(pos, orientation, turn);
+
+        expect(changePositionActionSpy.calledOnce).to.be.true;
+        expect(changePositionActionSpy.calledWith(turn, pos)).to.be.true;
+      })
+      it.skip("should return agent's new position", () => {});
     });
   });
 });
