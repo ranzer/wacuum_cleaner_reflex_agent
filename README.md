@@ -1,6 +1,7 @@
 ## Simple wacuum cleaner reflex agent
 A performance-measuring environment simulator for the vacuum-cleaner world
 
+[![Build Status](https://travis-ci.org/ranzer/wacuum_cleaner_reflex_agent.svg?branch=master)](https://travis-ci.org/ranzer/wacuum_cleaner_reflex_agent)
 ### Prerequisites
  * Node.js 8.9.0 or greater;
  * Mocha;
